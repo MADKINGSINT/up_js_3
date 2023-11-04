@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Добавление отзыва</title>
+</head>
+
+<body>
+    <h1>Добавление отзыва о продукте</h1>
+    <form id="reviewForm">
+        <label for="productName">Название продукта:</label>
+        <input type="text" id="productName" required><br><br>
+        <label for="reviewText">Текст отзыва:</label><br>
+        <textarea id="reviewText" required></textarea><br><br>
+        <input type="submit" value="Добавить отзыв">
+    </form>
+    <p id="error" style="color: red; display: none;">Пожалуйста, заполните все поля</p>
+
+    <script>
+        document.getElementById("reviewForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var productName = document.getElementById("productName").value;
+            var reviewText = document.getElementById("reviewText").value;
+
+            if (productName == "" || reviewText == "") {
+                document.getElementById("error").style.display = "block";
+            } else {
+                var review = {
+                    product: productName,
+                    text: reviewText
+                };
+                var existingReviews = localStorage.getItem("reviews");
+                if (existingReviews) {
+                    existingReviews = JSON.parse(existingReviews);
+                } else {
+                    existingReviews = [];
+                }
+                existingReviews.push(review);
+                localStorage.setItem("reviews", JSON.stringify(existingReviews));
+                // Опционально - перенаправление пользователя на страницу просмотра отзывов
+                window.location.href = "view_reviews.html";
+            }
+        });
+    </script>
+</body>
+
+</html>

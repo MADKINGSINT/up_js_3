@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Просмотр отзывов</title>
+</head>
+
+<body>
+    <h1>Просмотр отзывов</h1>
+    <div id="reviews"></div>
+
+    <script>
+        var reviews = localStorage.getItem("reviews");
+        if (reviews) {
+            reviews = JSON.parse(reviews);
+            for (var i = 0; i < reviews.length; i++) {
+                var product = reviews[i].product;
+                var text = reviews[i].text;
+
+                var div = document.createElement("div");
+                div.innerHTML = "<h3>" + product + "</h3><p>" + text + "</p>";
+                var showHideButton = document.createElement("button");
+                showHideButton.innerHTML = "Показать отзывы";
+                showHideButton.addEventListener("click", function () {
+                    var reviewsDiv = this.parentNode.getElementsByTagName("div")[0];
+                    if (reviewsDiv.style.display === "none") {
+                        reviewsDiv.style.display = "block";
+                        this.innerHTML = "Скрыть отзывы";
+                    } else {
+                        reviewsDiv.style.display = "none";
+                        this.innerHTML = "Показать отзывы";
+                    }
+                });
+                var deleteButton = document.createElement("button");
+                deleteButton.innerHTML = "Удалить";
+                deleteButton.addEventListener("click", function () {
+                    var reviewDiv = this.parentNode;
+                    var parentDiv = reviewDiv.parentNode;
+                    var product = reviewDiv.getElementsByTagName("h3")[0].innerHTML;
+                    var existingReviews = localStorage.getItem("reviews");
+                    if (existingReviews) {
+                        existingReviews = JSON.parse(existingReviews);
+                        for (var i = 0; i < existingReviews.length; i++) {
+                            if (existingReviews[i].product === product) {
+                                existingReviews.splice(i, 1);
+                                break;
+                            }
+                        }
+                        localStorage.setItem("reviews", JSON.stringify(existingReviews));
+                        parentDiv.removeChild(reviewDiv);
+                        if (existingReviews.length === 0) {
+                            localStorage.removeItem("reviews");
+                        }
+                    }
+                });
+
+                div.appendChild(showHideButton);
+                div.appendChild(deleteButton);
+                document.getElementById("reviews").appendChild(div);
+            }
+        }
+    </script>
+</body>
+
+</html>
